@@ -21,6 +21,10 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float _jumpForce;
     [SerializeField] private KeyCode _jumpKey;
 
+    //Interact
+    [SerializeField] private float _interactRange;
+    [SerializeField] private KeyCode _interactKey;
+
     private void Start()
     {
         _rb = GetComponent<Rigidbody>();
@@ -34,6 +38,11 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKeyDown(_jumpKey))
         {
             TryJump();
+        }
+
+        if (Input.GetKeyDown(_interactKey))
+        {
+            TryInteract();
         }
     }
 
@@ -77,6 +86,20 @@ public class PlayerMovement : MonoBehaviour
     {
         _rb.velocity = new Vector3(_rb.velocity.x, 0, _rb.velocity.z);
         _rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+    }
+
+    private void TryInteract()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(_eyes.position, _eyes.forward, out hit, _interactRange))
+        {
+            IInteractable interactable = hit.collider.gameObject.GetComponent<IInteractable>();
+
+            if (interactable != null)
+            {
+                interactable.Interact();
+            }
+        }
     }
 
     private bool IsGrounded()
