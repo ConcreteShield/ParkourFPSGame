@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Baloon : MonoBehaviour, IInteractable
+public class Balloon : MonoBehaviour, IInteractable
 {
     public void Interact()
     {
