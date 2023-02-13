@@ -17,6 +17,10 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]private float _speed;
     private Rigidbody _rb;
 
+    //Jump
+    [SerializeField] private float _jumpForce;
+    [SerializeField] private KeyCode _jumpKey;
+
     private void Start()
     {
         _rb = GetComponent<Rigidbody>();
@@ -26,6 +30,11 @@ public class PlayerMovement : MonoBehaviour
     {
         RotateEyes();
         RotateBody();
+
+        if (Input.GetKeyDown(_jumpKey))
+        {
+            TryJump();
+        }
     }
 
     private void FixedUpdate()
@@ -54,5 +63,25 @@ public class PlayerMovement : MonoBehaviour
         Vector3 direction = transform.right * xDirection + transform.forward * zDirection;
 
         _rb.velocity = new Vector3(0, _rb.velocity.y, 0) + direction.normalized * _speed;
+    }
+
+    private void TryJump()
+    {
+        if (IsGrounded())
+        {
+            Jump(_jumpForce);
+        }
+    }
+
+    private void Jump(float jumpForce)
+    {
+        _rb.velocity = new Vector3(_rb.velocity.x, 0, _rb.velocity.z);
+        _rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+    }
+
+    private bool IsGrounded()
+    {
+        RaycastHit hit;
+        return Physics.Raycast(transform.position, -transform.up, out hit, 1.1f);
     }
 }
